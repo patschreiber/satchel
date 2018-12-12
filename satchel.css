@@ -1,0 +1,7 @@
+* {
+  font-family: 'Consolas', 'Courier', monospace;
+}
+
+.grid-square {
+  display: inline-block;
+}

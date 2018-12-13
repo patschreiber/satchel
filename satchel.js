@@ -77,36 +77,69 @@ function findItemCoords(x, y) {
   // We keep track of our visited squares to avoid infinite loops.
   let visited = {};
   let queue = [];
+  let itemCoords = [];
+
   queue.push([x,y]);
-  console.log(queue);
 
   while(queue.length > 0) {
-    let squareCoords = queue.shift();
-    let x = squareCoords[0];
-    let y = squareCoords[1];
+    console.log(queue.length)
+    let currentSquareCoords = queue.shift();
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ currently processing: " + currentSquareCoords)
     // We want visitedKey to be a string so we can use it as the dictionary key.
-    let visitedKey = x + "," + y;
+    let visitedKey = stringifyCoords(currentSquareCoords);
 
     // If we've already visited this square, let's not process it again. 
     if (visited[visitedKey]) {
       return;
     } else {
+      processSquare();
       visited[visitedKey] = true;
     }
 
     // Define our neighbors
-    
-    let neighbors = getNeighbors(x, y);
+    let neighbors = getNeighbors(currentSquareCoords);
+    console.log(neighbors)
 
     // Let's add the current square's neighbors to the queue in order to be 
     // processed, only if it hasn't been visited before.
+    for (let key in neighbors) {
+      let neighborCoords = neighbors[key];
+
+      if (neighborCoords) {
+        let visitedKey = stringifyCoords(neighborCoords);
+        console.log("======= neighbor visited? ========")
+        console.log(visited)
+        console.log(visitedKey);
+        console.log(visited[visitedKey]);
+        if (visited[visitedKey]) {
+          continue;
+        }
+        console.log("******* pushing " + visitedKey + " to  queue **********")
+        queue.push(neighbors[key]);
+        console.log("==================================")
+      }
+    }
 
   }
 }
 
-//findItemCoords(1,1)
+function processSquare() {
+  console.error("processing")
+}
 
-function getNeighbors(x, y) {
+function stringifyCoords(coords) {
+  let x = coords[0];
+  let y = coords[1];
+
+  return x + "," + y;
+}
+
+//findItemCoords(0,0)
+
+function getNeighbors(squareCoords) {
+  let x = squareCoords[0];
+  let y = squareCoords[1];
+
   let neighbors = {
     "topLeft": false,
     "top": false,
@@ -121,6 +154,11 @@ function getNeighbors(x, y) {
   let atBottom = satchel[y+1] === undefined ? true : false;
   let atLeftBorder = satchel[x-1] === undefined ? true : false;
   let atRightBorder = satchel[x+1] === undefined ? true : false;
+
+  console.log("atTop:" + atTop)
+  console.log("atBottom:" + atBottom)
+  console.log("atLeftBorder:" + atLeftBorder)
+  console.log("atRightBorder:" + atRightBorder)
 
   if (atTop === false) {
     if (atLeftBorder === false) {
@@ -156,11 +194,10 @@ function getNeighbors(x, y) {
   return neighbors;
 }
 
-var hello = getNeighbors(0, 1);
-console.log(hello)
-
 function selectSquare() {
+  let squareContents = satchel[this.dataset.y][this.dataset.x]
   console.log(this);
   console.log(this.dataset.x + "," + this.dataset.y);
-  findItemCoords(this.dataset.x, this.dataset.y);
+  console.error(squareContents)
+  findItemCoords(parseInt(this.dataset.x), parseInt(this.dataset.y));
 }

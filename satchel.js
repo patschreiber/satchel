@@ -88,7 +88,7 @@ function findItemCoords(x, y) {
     // We want visitedKey to be a string so we can use it as the dictionary key.
     let visitedKey = stringifyCoords(currentSquareCoords);
 
-    // If we've already visited this square, let's not process it again. 
+    // If we've already visited this square, let's not process it again.
     if (visited[visitedKey]) {
       return;
     } else {
@@ -100,7 +100,7 @@ function findItemCoords(x, y) {
     let neighbors = getNeighbors(currentSquareCoords);
     console.log(neighbors)
 
-    // Let's add the current square's neighbors to the queue in order to be 
+    // Let's add the current square's neighbors to the queue in order to be
     // processed, only if it hasn't been visited before.
     for (let key in neighbors) {
       let neighborCoords = neighbors[key];

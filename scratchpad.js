@@ -9,7 +9,7 @@ class Satchel {
     ];
   }
 
-  get name() 
+  get name()
 {    return this.name;
   }
 }

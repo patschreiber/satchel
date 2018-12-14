@@ -29,7 +29,9 @@ let ri = {
   itemName: "Super Magic Ring"
 }
 
-
+/**
+ * Our singleton "satchel" array
+ */
 var satchel = [
 [xx,xx,xx,xx,xx,xx,xx,xx,xx,xx],
 [pa,pa,xx,xx,xx,xx,xx,xx,xx,xx],
@@ -42,6 +44,10 @@ var satchel = [
 // console.log(satchel[0][11])
 // console.log(satchel[0-1])
 
+/**
+ * Creates the grid DOM structure
+ * @param {array} matrix    The 2D array representing our grid.
+ */
 function constructGrid(matrix) {
   let grid = document.createElement("div");
 
@@ -68,6 +74,11 @@ function constructGrid(matrix) {
   return grid;
 }
 
+/**
+ * Renders the constructed grid to the DOM. Replaces current element's children.
+ * @param {array} matrix	  The 2D array representing our grid.
+ * @param {string} element  The id of the element to render the grid.
+ */
 function renderGrid(matrix, element) {
   let grid = constructGrid(matrix);
   grid.setAttribute("id", element);
@@ -79,21 +90,27 @@ function renderGrid(matrix, element) {
 renderGrid(satchel, "satchel");
 
 /**
- * // Bind a click event to all grid squares
+ * Bind a click event to all grid squares
+ * @param {object} callback    The callback function.
  */
 function bindSatchelClickEvent(event) {
   // Bind a click event to all grid squares
   // var gridSquares = document.getElementsByClassName("grid-square");
   var gridSquares = Sizzle(".grid-square");
   for (let i=0; i<gridSquares.length; i++) {
-      gridSquares[i].addEventListener('click',event);
+      gridSquares[i].addEventListener('click',callback);
   }
 }
 
 bindSatchelClickEvent(selectSquare);
 
+/**
+ *
+ * @param {int} x       The x position on the 2D (grid) array.
+ * @param {int} y	      The y position on the 2D (grid) array.
+ * @param {int} itemId	The unique item id of the object in the grid square.
+ */
 function findItemCoords(x, y, itemId) {
-
   // We keep track of our visited squares to avoid infinite loops.
   let visited = {};
   let queue = [];
@@ -122,7 +139,7 @@ function findItemCoords(x, y, itemId) {
       visited[visitedKey] = true;
     }
 
-    // Define our neighbors
+    // Meet our neighbors
     let neighbors = getNeighbors(currentSquareCoords);
 
     // Let's add the current square's neighbors to the queue in order to be
@@ -147,6 +164,12 @@ function findItemCoords(x, y, itemId) {
   return itemCoords;
 }
 
+/**
+ * Determines if the value of the itemId at currentSquareCoordinates is the
+ * same as the item id we're searching for.
+ * @param {array} currentSquareCoords	  The [x,y] coordinates of the square.
+ * @param {*} itemId	                  The item id we're searching for.
+ */
 function compareSquareValue(currentSquareCoords, itemId) {
   let x = currentSquareCoords[0];
   let y = currentSquareCoords[1];
@@ -161,8 +184,6 @@ function stringifyCoords(coords) {
 
   return x + "," + y;
 }
-
-//findItemCoords(0,0)
 
 /**
  * Finds all neighboring squares to square located at the provided coordinates.
@@ -226,6 +247,10 @@ function getNeighbors(squareCoords) {
   return neighbors;
 }
 
+/**
+ * Callback function
+ * Modifies the grid state based on the value at the selected square.
+ */
 function selectSquare() {
   // We need to ensure x and y are ints
   let x = parseInt(this.dataset.x);
@@ -243,6 +268,10 @@ function selectSquare() {
   clearSelectedItem(itemCoords);
 }
 
+/**
+ * Removes the item from the grid using the item's grid coordinates.
+ * @param {array} itemCoords  An array of item coordinates.
+ */
 function clearSelectedItem(itemCoords) {
   for (let i=0; i<itemCoords.length; i++) {
     let x = itemCoords[i][0];
@@ -254,6 +283,9 @@ function clearSelectedItem(itemCoords) {
   redrawSatchel();
 }
 
+/**
+ * Re-renders the satchel object to the DOM.
+ */
 function redrawSatchel() {
   renderGrid(satchel, "satchel");
   bindSatchelClickEvent(selectSquare);

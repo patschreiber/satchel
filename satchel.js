@@ -42,8 +42,9 @@ var satchel = [
 // console.log(satchel[0][11])
 // console.log(satchel[0-1])
 
+function constructGrid(matrix) {
+  let grid = document.createElement("div");
 
-function renderGrid(matrix, element) {
   // Grid rows
   for (let i=0; i<matrix.length; i++) {
     let rowDiv = document.createElement("div");
@@ -61,20 +62,35 @@ function renderGrid(matrix, element) {
       rowDiv.appendChild(gridSquare);
     }
 
-    document.getElementById(element).appendChild(rowDiv);
+    grid.appendChild(rowDiv);
   }
+
+  return grid;
+}
+
+function renderGrid(matrix, element) {
+  let grid = constructGrid(matrix);
+  grid.setAttribute("id", element);
+  let container = document.getElementById(element);
+
+  container.replaceWith(grid);
 }
 
 renderGrid(satchel, "satchel");
 
-
-
-// Bind a click event to all grid squares
-// var gridSquares = document.getElementsByClassName("grid-square");
-var gridSquares = Sizzle(".grid-square");
-for (let i=0; i<gridSquares.length; i++) {
-    gridSquares[i].addEventListener('click',selectSquare);
+/**
+ * // Bind a click event to all grid squares
+ */
+function bindSatchelClickEvent(event) {
+  // Bind a click event to all grid squares
+  // var gridSquares = document.getElementsByClassName("grid-square");
+  var gridSquares = Sizzle(".grid-square");
+  for (let i=0; i<gridSquares.length; i++) {
+      gridSquares[i].addEventListener('click',event);
+  }
 }
+
+bindSatchelClickEvent(selectSquare);
 
 function findItemCoords(x, y, itemId) {
 
@@ -216,15 +232,29 @@ function selectSquare() {
   let y = parseInt(this.dataset.y);
   let squareContents = satchel[y][x];
 
+  if (squareContents.itemId === 0) {
+    return;
+  }
+
   let itemCoords = findItemCoords(x, y, squareContents.itemId);
-  console.log('itemCoords :', itemCoords);
   Sizzle("#currently-selected-item")[0].innerHTML = squareContents.itemName;
   clipboard = itemCoords;
 
+  clearSelectedItem(itemCoords);
 }
 
 function clearSelectedItem(itemCoords) {
-  for(let i=0; i<itemCoords.length; i++) {
+  for (let i=0; i<itemCoords.length; i++) {
+    let x = itemCoords[i][0];
+    let y = itemCoords[i][1];
 
+    satchel[y][x] = xx;
   }
+
+  redrawSatchel();
+}
+
+function redrawSatchel() {
+  renderGrid(satchel, "satchel");
+  bindSatchelClickEvent(selectSquare);
 }

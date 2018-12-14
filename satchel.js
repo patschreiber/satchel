@@ -1,31 +1,46 @@
 
 
-var clipboard = [
-[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]
-]
+let clipboard = [];
 
-// Our coordinates
+// Empty square
+let xx = {
+  itemId: 0,
+  itemAbbr: "░",
+  itemName: null
+};
+
+// Plate Armor
+let pa = {
+  itemId: 1001,
+  itemAbbr: "▲",   // item abbreviation
+  itemName: "Plate Armor"
+};
+
+// Ring
+let rr = {
+  itemId: 1002,
+  itemAbbr: "⦾",   // item abbreviation
+  itemName: "Magic Ring"
+}
+// Ring
+let ri = {
+  itemId: 1003,
+  itemAbbr: "⦾",   // item abbreviation
+  itemName: "Super Magic Ring"
+}
+
 
 var satchel = [
-[0,0,0,1,1,"p","p","p",0,0],
-[0,0,0,1,1,0,0,0,0,0],
-[0,0,0,1,1,0,0,0,0,0],
-[0,0,0,1,1,0,0,0,0,0]
+[xx,xx,xx,xx,xx,xx,xx,xx,xx,xx],
+[pa,pa,xx,xx,xx,xx,xx,xx,xx,xx],
+[pa,pa,xx,xx,xx,xx,xx,ri,xx,xx],
+[pa,pa,xx,xx,xx,xx,rr,xx,xx,xx]
 ];
 
 
 // Non-existent grid space is undefined
-console.log(satchel[0][11])
-console.log(satchel[0-1])
-
-console.log("+++++++++")
-let y = 1
-let x = 1
-var a = y + "," + x
-let testHash = {}
-testHash[a] = true
-console.log(!testHash["2,1"]);
-console.log(testHash["1,1"]);
+// console.log(satchel[0][11])
+// console.log(satchel[0-1])
 
 
 function renderGrid(matrix, element) {
@@ -36,11 +51,12 @@ function renderGrid(matrix, element) {
 
     // Grid squares
     for (let j=0; j<matrix[i].length; j++) {
+      let gridSquareVal = matrix[i][j];
       let gridSquare = document.createElement("div");
       gridSquare.setAttribute('class', 'grid-square');
       gridSquare.setAttribute('data-x', j);
       gridSquare.setAttribute('data-y', i);
-      gridSquare.innerHTML = `[${matrix[i][j]}]`;
+      gridSquare.innerHTML = `[${gridSquareVal.itemAbbr}]`;
 
       rowDiv.appendChild(gridSquare);
     }
@@ -60,71 +76,67 @@ for (let i=0; i<gridSquares.length; i++) {
     gridSquares[i].addEventListener('click',selectSquare);
 }
 
-// TODO - May need to do BFS here using a queue
-//function recursiveSearch(currentGridSquareVal, x, y, coordList) {
-//   let newGridSquareVal = satchel[y][x];
-//   if (newGridSquareVal === gridSquareVal) {
-//     coordList.push([x, y]);
-//     recursiveSearch(newGridSquareVal, x-1,)
-//   } else {
-//   }
-// }
-
-function findItemCoords(x, y) {
-  console.log(satchel[y][x]);
-  //let itemCoords = recursiveSearch(satchel[y][x], x, y, []);
+function findItemCoords(x, y, itemId) {
 
   // We keep track of our visited squares to avoid infinite loops.
   let visited = {};
   let queue = [];
   let itemCoords = [];
 
+  // Let's add our initial square to the queue
   queue.push([x,y]);
 
-  while(queue.length > 0) {
-    console.log(queue.length)
+  while (queue.length > 0) {
     let currentSquareCoords = queue.shift();
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ currently processing: " + currentSquareCoords)
+    // console.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ currently processing: " + currentSquareCoords)
+    // console.log('queue.length :', queue.length);
+    // console.log('visited :', visited);
     // We want visitedKey to be a string so we can use it as the dictionary key.
     let visitedKey = stringifyCoords(currentSquareCoords);
 
     // If we've already visited this square, let's not process it again.
     if (visited[visitedKey]) {
-      return;
+      continue;
     } else {
-      processSquare();
+      let isItemInSquare = compareSquareValue(currentSquareCoords, itemId);
+      if (isItemInSquare) {
+        itemCoords.push(currentSquareCoords);
+      }
+
       visited[visitedKey] = true;
     }
 
     // Define our neighbors
     let neighbors = getNeighbors(currentSquareCoords);
-    console.log(neighbors)
 
     // Let's add the current square's neighbors to the queue in order to be
     // processed, only if it hasn't been visited before.
     for (let key in neighbors) {
       let neighborCoords = neighbors[key];
 
-      if (neighborCoords) {
+      if (neighborCoords !== false) {
         let visitedKey = stringifyCoords(neighborCoords);
-        console.log("======= neighbor visited? ========")
-        console.log(visited)
-        console.log(visitedKey);
-        console.log(visited[visitedKey]);
+        // We don't want to push to the queue if we've already visited this
+        // square.
         if (visited[visitedKey]) {
           continue;
         }
-        console.log("******* pushing " + visitedKey + " to  queue **********")
+
         queue.push(neighbors[key]);
-        console.log("==================================")
       }
     }
 
   }
+
+  return itemCoords;
 }
 
-function processSquare() {
-  console.error("processing")
+function compareSquareValue(currentSquareCoords, itemId) {
+  let x = currentSquareCoords[0];
+  let y = currentSquareCoords[1];
+  let currentSquareContents = satchel[y][x];
+
+  return currentSquareContents.itemId === itemId;
 }
 
 function stringifyCoords(coords) {
@@ -136,6 +148,10 @@ function stringifyCoords(coords) {
 
 //findItemCoords(0,0)
 
+/**
+ * Finds all neighboring squares to square located at the provided coordinates.
+ * @param {array} squareCoords The coordinates to a satchel square.
+ */
 function getNeighbors(squareCoords) {
   let x = squareCoords[0];
   let y = squareCoords[1];
@@ -152,13 +168,13 @@ function getNeighbors(squareCoords) {
   };
   let atTop = satchel[y-1] === undefined ? true : false;
   let atBottom = satchel[y+1] === undefined ? true : false;
-  let atLeftBorder = satchel[x-1] === undefined ? true : false;
-  let atRightBorder = satchel[x+1] === undefined ? true : false;
+  let atLeftBorder = satchel[y][x-1] === undefined ? true : false;
+  let atRightBorder = satchel[y][x+1] === undefined ? true : false;
 
-  console.log("atTop:" + atTop)
-  console.log("atBottom:" + atBottom)
-  console.log("atLeftBorder:" + atLeftBorder)
-  console.log("atRightBorder:" + atRightBorder)
+  // console.log("atTop:" + atTop)
+  // console.log("atBottom:" + atBottom)
+  // console.log("atLeftBorder:" + atLeftBorder)
+  // console.log("atRightBorder:" + atRightBorder)
 
   if (atTop === false) {
     if (atLeftBorder === false) {
@@ -195,9 +211,20 @@ function getNeighbors(squareCoords) {
 }
 
 function selectSquare() {
-  let squareContents = satchel[this.dataset.y][this.dataset.x]
-  console.log(this);
-  console.log(this.dataset.x + "," + this.dataset.y);
-  console.error(squareContents)
-  findItemCoords(parseInt(this.dataset.x), parseInt(this.dataset.y));
+  // We need to ensure x and y are ints
+  let x = parseInt(this.dataset.x);
+  let y = parseInt(this.dataset.y);
+  let squareContents = satchel[y][x];
+
+  let itemCoords = findItemCoords(x, y, squareContents.itemId);
+  console.log('itemCoords :', itemCoords);
+  Sizzle("#currently-selected-item")[0].innerHTML = squareContents.itemName;
+  clipboard = itemCoords;
+
+}
+
+function clearSelectedItem(itemCoords) {
+  for(let i=0; i<itemCoords.length; i++) {
+
+  }
 }

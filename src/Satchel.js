@@ -61,7 +61,6 @@ class Satchel extends Grid {
           queue.push(neighbors[key]);
         }
       }
-
     }
 
     return itemCoords;

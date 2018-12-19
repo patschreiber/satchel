@@ -21,6 +21,7 @@ class Grid {
   /**
    * Converts a coordinate pair array into a string. E.g [1,2] -> "1,2"
    * @param {array} coords  The coordinate pair to stringify.
+   * @return {string}       The coordinates in string form. E.g "1,2"
    */
   stringifyCoords(coords) {
     let x = coords[0];
@@ -30,9 +31,34 @@ class Grid {
   }
 
   /**
+   * Checks if a square coordinate is touching a boundary of the grid.
+   * @param {array} squareCoords  The coordinates to a satchel square.
+   * @param {array} grid          The 2D grid to search.
+   * @return {object}             The boundaries the squareCoords are touching.
+   */
+  boundariesTouching(squareCoords, grid) {
+    let x = squareCoords[0];
+    let y = squareCoords[1];
+    let touchingBoundaries = {
+      top: grid[y-1] === undefined ? true : false,
+      bottom: grid[y+1] === undefined ? true : false,
+      leftBorder: grid[y][x-1] === undefined ? true : false,
+      rightBorder: grid[y][x+1] === undefined ? true : false
+    }
+
+    // console.log("atTop:" + top)
+    // console.log("atBottom:" + bottom)
+    // console.log("atLeftBorder:" + leftBorder)
+    // console.log("atRightBorder:" + rightBorder)
+
+    return touchingBoundaries;
+  }
+
+  /**
    * Finds all neighboring squares to square located at the provided coords.
-   * @param {array} squareCoords The coordinates to a satchel square.
-   * @param {array} grid         The 2D grid to search
+   * @param  {array} squareCoords The coordinates to a satchel square.
+   * @param  {array} grid         The 2D grid to search.
+   * @return {array}              The array of neighbor coordinates.
    */
   getNeighbors(squareCoords, grid) {
     let x = squareCoords[0];
@@ -48,44 +74,37 @@ class Grid {
       "bottom": false,
       "bottomRight": false
     };
-    let atTop = grid[y-1] === undefined ? true : false;
-    let atBottom = grid[y+1] === undefined ? true : false;
-    let atLeftBorder = grid[y][x-1] === undefined ? true : false;
-    let atRightBorder = grid[y][x+1] === undefined ? true : false;
 
-    // console.log("atTop:" + atTop)
-    // console.log("atBottom:" + atBottom)
-    // console.log("atLeftBorder:" + atLeftBorder)
-    // console.log("atRightBorder:" + atRightBorder)
+    let atBoundary = this.boundariesTouching(squareCoords, grid);
 
-    if (atTop === false) {
-      if (atLeftBorder === false) {
+    if (atBoundary.top === false) {
+      if (atBoundary.leftBorder === false) {
         neighbors["topLeft"] = [x-1, y-1];
       }
-      if (atRightBorder === false) {
+      if (atBoundary.rightBorder === false) {
         neighbors["topRight"] = [x+1, y-1];
       }
 
       neighbors["top"] = [x, y-1];
     }
 
-    if (atBottom === false) {
-      if (atLeftBorder === false) {
+    if (atBoundary.bottom === false) {
+      if (atBoundary.leftBorder === false) {
         neighbors["bottomLeft"] = [x, y+1];
       }
 
-      if (atRightBorder === false) {
+      if (atBoundary.rightBorder === false) {
         neighbors["bottomRight"] = [x+1, y+1];
       }
 
       neighbors["bottom"] = [x, y+1];
     }
 
-    if (atLeftBorder === false) {
+    if (atBoundary.leftBorder === false) {
       neighbors["left"] = [x-1, y];
     }
 
-    if (atRightBorder === false) {
+    if (atBoundary.rightBorder === false) {
       neighbors["right"] = [x+1, y];
     }
 

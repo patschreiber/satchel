@@ -7,7 +7,14 @@ class Satchel extends Grid {
   constructor(width, height) {
     let initialGridBlankVal = ItemLibrary.emptyItem;
     super(width, height, initialGridBlankVal);
-    this.clipboard = [];
+
+    // We want to store a reference to the item as well as it's coordinates in
+    // the satchel grid. This lets us reference item properties and return the
+    // item to its original grid position, if we so choose.
+    this.clipboard = {
+      itemObject: {},
+      itemCoords: []
+    };
   }
 
   /**
@@ -67,7 +74,10 @@ class Satchel extends Grid {
   }
 
   getSelectedItemSize() {
-    return this.clipboard.length;
+    return this.clipboard.itemCoords.length;
+  }
+
+  canPlaceItem() {
 
   }
 

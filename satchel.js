@@ -32,7 +32,7 @@ function constructGrid(matrix) {
       gridSquare.setAttribute('class', 'grid-square');
       gridSquare.setAttribute('data-x', j);
       gridSquare.setAttribute('data-y', i);
-      gridSquare.innerHTML = `[${gridSquareVal.itemSym}]`;
+      gridSquare.innerHTML = `[${gridSquareVal.sym}]`;
 
       rowDiv.appendChild(gridSquare);
     }
@@ -83,6 +83,8 @@ function bindSatchelEvent(callback, type) {
 function castShadow() {
   temp = this.innerHTML;
   this.innerHTML = '[x]';
+  console.log('inventory.getSelectedItemSize() :', inventory.getSelectedItemSize());
+  console.log('inventory.clipboard.itemObject :', inventory.clipboard.itemObject);
 }
 
 function selection() {
@@ -110,10 +112,10 @@ function selectSquare() {
   }
 
   let itemCoords = inventory.findItemCoords(x, y, squareContents.itemId);
-  Sizzle("#currently-selected-item")[0].innerHTML = squareContents.itemName;
-  inventory.clipboard = itemCoords;
-  console.log('clipboard :', inventory.clipboard);
-  console.log('inventory.getSelectedItemSize() :', inventory.getSelectedItemSize());
+  Sizzle("#currently-selected-item")[0].innerHTML = squareContents.name;
+  inventory.clipboard.itemObject = squareContents;
+  inventory.clipboard.itemCoords = itemCoords;
+  console.log('clipboard :', inventory.clipboard.itemCoords);
 
   clearSelectedItem(itemCoords);
 }

@@ -1,4 +1,5 @@
-let clipboard = [];
+
+let temp = null;
 
 let inventory = new Satchel(10, 4);
 
@@ -10,10 +11,6 @@ inventory.grid[2][1] = ItemLibrary.testArmor;
 inventory.grid[3][1] = ItemLibrary.testArmor;
 
 inventory.grid[2][7] = ItemLibrary.testRing;
-
-
-
-
 
 
 /**
@@ -35,7 +32,7 @@ function constructGrid(matrix) {
       gridSquare.setAttribute('class', 'grid-square');
       gridSquare.setAttribute('data-x', j);
       gridSquare.setAttribute('data-y', i);
-      gridSquare.innerHTML = `[${gridSquareVal.itemAbbr}]`;
+      gridSquare.innerHTML = `[${gridSquareVal.itemSym}]`;
 
       rowDiv.appendChild(gridSquare);
     }
@@ -61,20 +58,42 @@ function renderGrid(matrix, element) {
 
 renderGrid(inventory.grid, "satchel");
 
+
+
+
 /**
- * Bind a click event to all grid squares
- * @param {object} callback    The callback function.
+ *            Click Events
  */
-function bindSatchelClickEvent(callback) {
+
+
+/**
+ * Binds an event to all grid squares
+ * @param {object} callback    The callback function.
+ * @param {string} type	       The type of event e.g. 'click'
+ */
+function bindSatchelEvent(callback, type) {
   // Bind a click event to all grid squares
   // var gridSquares = document.getElementsByClassName("grid-square");
   var gridSquares = Sizzle(".grid-square");
   for (let i=0; i<gridSquares.length; i++) {
-      gridSquares[i].addEventListener('click',callback);
+      gridSquares[i].addEventListener(type,callback);
   }
 }
 
-bindSatchelClickEvent(selectSquare);
+function castShadow() {
+  temp = this.innerHTML;
+  this.innerHTML = '[x]';
+}
+
+function selection() {
+  this.innerHTML = temp;
+  temp = null;
+}
+
+bindSatchelEvent(selectSquare, 'click');
+bindSatchelEvent(castShadow, 'mouseover');
+bindSatchelEvent(selection, 'mouseout');
+
 
 /**
  * Callback function
@@ -92,8 +111,9 @@ function selectSquare() {
 
   let itemCoords = inventory.findItemCoords(x, y, squareContents.itemId);
   Sizzle("#currently-selected-item")[0].innerHTML = squareContents.itemName;
-  clipboard = itemCoords;
-  console.log('clipboard :', clipboard);
+  inventory.clipboard = itemCoords;
+  console.log('clipboard :', inventory.clipboard);
+  console.log('inventory.getSelectedItemSize() :', inventory.getSelectedItemSize());
 
   clearSelectedItem(itemCoords);
 }
@@ -108,6 +128,7 @@ function clearSelectedItem(itemCoords) {
     let y = itemCoords[i][1];
 
     inventory.grid[y][x] = ItemLibrary.emptyItem;
+
   }
 
   redrawSatchel();
@@ -118,5 +139,8 @@ function clearSelectedItem(itemCoords) {
  */
 function redrawSatchel() {
   renderGrid(inventory.grid, "satchel");
-  bindSatchelClickEvent(selectSquare);
+  bindSatchelEvent(selectSquare, 'click');
+  bindSatchelEvent(castShadow, 'mouseover');
+  bindSatchelEvent(selection, 'mouseout');
+
 }

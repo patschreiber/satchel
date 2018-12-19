@@ -1,20 +1,23 @@
 var ItemLibrary = {
+  shadow: {
+    itemSym: "M"
+  },
   // Empty item
   emptyItem: {
     itemId: 0,
-    itemAbbr: " ",
+    itemSym: " ",
     itemName: null
   },
   // Plate Armor
   testArmor: {
     itemId: 1001,
-    itemAbbr: "▲",   // item abbreviation
+    itemSym: "▲",   // item abbreviation
     itemName: "Plate Armor"
   },
   // Ring
   testRing: {
     itemId: 1002,
-    itemAbbr: "⦾",   // item abbreviation
+    itemSym: "⦾",   // item abbreviation
     itemName: "Magic Ring"
   }
 }

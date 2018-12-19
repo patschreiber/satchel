@@ -1,7 +1,20 @@
 class Grid {
-  construct() {
-    if (new.target === Grid) {
-      throw new TypeError("Grid is considered an Abstract class and as such can't be instantiated directly.");
+  /**
+   *
+   * @param {int} width	        How many columns the subarray should be.
+   * @param {int} height        How many rows the 2D array should have.
+   * @param {mixed} blankVal    The initial value for blank squares.
+   */
+  constructor(width, height, blankVal = 0) {
+    this.grid = [];
+
+    // Defines the grid
+    for (let i=0; i<height; i++) {
+      let row = [];
+      for (let j=0; j<width; j++) {
+        row[j] = blankVal;
+      }
+      this.grid[i] = row;
     }
   }
 
@@ -77,35 +90,5 @@ class Grid {
     }
 
     return neighbors;
-  }
-
-  /**
-   * Creates the grid DOM structure
-   * @param {array} matrix    The 2D array representing our grid.
-   */
-  constructGrid(matrix) {
-    let grid = document.createElement("div");
-
-    // Grid rows
-    for (let i=0; i<matrix.length; i++) {
-      let rowDiv = document.createElement("div");
-      rowDiv.setAttribute('class', 'grid-row');
-
-      // Grid squares
-      for (let j=0; j<matrix[i].length; j++) {
-        let gridSquareVal = matrix[i][j];
-        let gridSquare = document.createElement("div");
-        gridSquare.setAttribute('class', 'grid-square');
-        gridSquare.setAttribute('data-x', j);
-        gridSquare.setAttribute('data-y', i);
-        gridSquare.innerHTML = `[${gridSquareVal.itemAbbr}]`;
-
-        rowDiv.appendChild(gridSquare);
-      }
-
-      grid.appendChild(rowDiv);
-    }
-
-    return grid;
   }
 }

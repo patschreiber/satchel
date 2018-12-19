@@ -2,19 +2,12 @@ class Satchel extends Grid {
   /**
    *
    * @param {int} width  How many columns the subarray should be.
-   * @param {*} height How many rows the 2D array should have.
+   * @param {int} height How many rows the 2D array should have.
    */
   constructor(width, height) {
-    super();
-    this.grid = [];
-    // Defines the grid
-    for (let i=0; i<height; i++) {
-      let row = [];
-      for (let j=0; j<width; j++) {
-        row[j] = ItemLibrary.emptyItem;
-      }
-      this.grid[i] = row;
-    }
+    let initialGridBlankVal = ItemLibrary.emptyItem;
+    super(width, height, initialGridBlankVal);
+    this.clipboard = [];
   }
 
   /**
@@ -72,6 +65,11 @@ class Satchel extends Grid {
     }
 
     return itemCoords;
+  }
+
+  getSelectedItemSize() {
+    return this.clipboard.length;
+
   }
 
   /**

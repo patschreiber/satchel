@@ -32,7 +32,7 @@ function constructGrid(matrix) {
       gridSquare.setAttribute('class', 'grid-square');
       gridSquare.setAttribute('data-x', j);
       gridSquare.setAttribute('data-y', i);
-      gridSquare.innerHTML = `[${gridSquareVal.sym}]`;
+      gridSquare.innerHTML = `${gridSquareVal.sym} `;
 
       rowDiv.appendChild(gridSquare);
     }
@@ -82,7 +82,7 @@ function bindSatchelEvent(callback, type) {
 
 function castShadow() {
   temp = this.innerHTML;
-  this.innerHTML = '[x]';
+  this.innerHTML = 'x';
   console.log('inventory.getSelectedItemSize() :', inventory.getSelectedItemSize());
   console.log('inventory.clipboard.itemObject :', inventory.clipboard.itemObject);
 }

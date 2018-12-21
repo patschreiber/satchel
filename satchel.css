@@ -2,9 +2,41 @@
   font-family: 'Consolas', 'Courier', monospace;
 }
 
+/* Colors
+blue muted: 294f6d
+blue 17639d
+green: 277553
+gold: aa8e39
+light green: 6caf92
+red: c25677
+*/
+
 .grid-square {
   display: inline-block;
 }
 .grid-square:hover {
   cursor: pointer;
+}
+
+.grid-square {
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+.grid-square:hover {
+  background-color: #6caf92;
+}
+
+.grid-row:after {
+  clear: both;
+  content: "";
+  display: table;
 }

@@ -208,17 +208,64 @@ function pickContents(x, y) {
 }
 
 function putContents(x, y) {
-  console.log("hi");
   let item = inventory.clipboard.itemObject;
   let itemSize = inventory.getClipboardItemSize();
-  let possiblePlacementSquares = getItemGhost(itemSize, item, x, y);
-  console.log('possiblePlacementSquares :', possiblePlacementSquares);
-  console.log('inventory.grid :', inventory.grid);
-  for (let i=0; i<possiblePlacementSquares.length; i++) {
+  let possiblePlacementCoords = getItemGhost(itemSize, item, x, y);
+  let currentOccupantId = 0;
+  let occupants = {};
 
+  for (let i=0; i<possiblePlacementCoords.length; i++) {
+    let x = possiblePlacementCoords[i][0];
+    let y = possiblePlacementCoords[i][1];
+
+    // We can't place an item that's going to be out of bounds.
+    if (x > inventory.maxX || y > inventory.maxY) {
+      console.error("out of bounds");
+      return;
+    }
+
+    currentOccupantId = inventory.grid[y][x].itemId;
+
+    if (currentOccupantId !== 0) {
+      occupants[currentOccupantId] = inventory.grid[y][x];
+    }
   }
+
+  // We need a count of how many different items currently exist in the desired
+  // placement and we only want to manipulate the grid if the item can be
+  // placed. If there's not 0-1 occupants in the desired grid, let's leave it
+  // alone.
+  switch (Object.keys(occupants).length) {
+    case 0:
+      placeItem(possiblePlacementCoords);
+      break;
+    case 1:
+      let itemId = Object.keys(occupants)[0];
+      placeItem(possiblePlacementCoords, occupants[itemId]);
+      break;
+    default:
+      return;
+  }
+
 }
 
+function placeItem(coords, swapItem = false) {
+  let itemToPlace = inventory.clipboard.itemObject;
+
+  if (swapItem) {
+    inventory.clipboard.itemObject = swapItem;
+  }
+
+  for (let i = 0; i<coords.length; i++) {
+    let x = coords[i][0];
+    let y = coords[i][1];
+    inventory.grid[y][x] = itemToPlace;
+    getDOMSquare(x, y).innerHTML = itemToPlace.sym;
+    Sizzle("#currently-selected-item")[0].innerHTML = "";
+  }
+
+  inventory.clearClipboard();
+}
 
 
 /**

@@ -10,7 +10,22 @@ inventory.grid[1][1] = ItemLibrary.testArmor;
 inventory.grid[2][1] = ItemLibrary.testArmor;
 inventory.grid[3][1] = ItemLibrary.testArmor;
 
+inventory.grid[0][2] = ItemLibrary.skinnySword;
+inventory.grid[1][2] = ItemLibrary.skinnySword;
+inventory.grid[2][2] = ItemLibrary.skinnySword;
+inventory.grid[3][2] = ItemLibrary.skinnySword;
+
 inventory.grid[2][7] = ItemLibrary.testRing;
+
+inventory.grid[0][9] = ItemLibrary.skinnySword;
+inventory.grid[1][9] = ItemLibrary.skinnySword;
+inventory.grid[2][9] = ItemLibrary.skinnySword;
+inventory.grid[3][9] = ItemLibrary.skinnySword;
+
+inventory.grid[0][4] = ItemLibrary.testBook;
+inventory.grid[1][4] = ItemLibrary.testBook;
+inventory.grid[0][5] = ItemLibrary.testBook;
+inventory.grid[1][5] = ItemLibrary.testBook;
 
 
 /**
@@ -57,7 +72,7 @@ function renderGrid(matrix, element) {
 }
 
 renderGrid(inventory.grid, "satchel");
-
+bindEvents();
 
 
 
@@ -80,21 +95,74 @@ function bindSatchelEvent(callback, type) {
   }
 }
 
-function castShadow() {
-  temp = this.innerHTML;
-  this.innerHTML = 'x';
-  console.log('inventory.getSelectedItemSize() :', inventory.getSelectedItemSize());
-  console.log('inventory.clipboard.itemObject :', inventory.clipboard.itemObject);
+function test() {
+  if (inventory.isClipboardEmpty()) {
+    return;
+  }
+
+  let x = parseInt(this.dataset.x);
+  let y = parseInt(this.dataset.y);
+  let item = inventory.clipboard.itemObject;
+  let itemSize = inventory.getSelectedItemSize();
+  let squaresToColor = [];
+
+  // We only need to worry about orientation for items bigger than 1 square.
+  if (itemSize > 1) {
+    if (item.orientation === "vertical") {
+      let height = itemSize / item.thickness;
+      let width = item.thickness;
+
+      for (let i=0; i<height; i++) {
+        for (let j=0; j<width; j++) {
+          squaresToColor.push([x+j,y+i]);
+        }
+      }
+    }
+
+    if (item.orientation === "horizontal") {
+      let height = item.thickness;
+      let width = itemSize / item.thickness;
+
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          squaresToColor.push([x + j, y + i]);
+        }
+      }
+    }
+  }
+
+  colorSatchelSquares(squaresToColor);
 }
 
-function selection() {
-  this.innerHTML = temp;
-  temp = null;
+function clearGridColor() {
+  let gridSquares = document.getElementsByClassName("grid-square");
+  for (let i=0; i<gridSquares.length; i++) {
+    gridSquares[i].removeAttribute("style");
+  }
 }
 
-bindSatchelEvent(selectSquare, 'click');
-bindSatchelEvent(castShadow, 'mouseover');
-bindSatchelEvent(selection, 'mouseout');
+function colorSatchelSquares(colorCoords) {
+  clearGridColor();
+  for (let i=0; i<colorCoords.length; i++) {
+    let x = colorCoords[i][0];
+    let y = colorCoords[i][1];
+
+    let square = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
+    if (square !== null) {
+      let squareContents = inventory.grid[y][x];
+      if (squareContents.itemId === 0) {
+        square.setAttribute("style", "background-color: #6caf92;");
+      } else {
+        square.setAttribute("style", "background-color: #c25677;");
+      }
+    }
+  }
+}
+
+function bindEvents() {
+  bindSatchelEvent(selectSquare, 'click');
+  bindSatchelEvent(test, 'mouseenter');
+}
 
 
 /**
@@ -105,6 +173,15 @@ function selectSquare() {
   // We need to ensure x and y are ints
   let x = parseInt(this.dataset.x);
   let y = parseInt(this.dataset.y);
+
+  if (inventory.isClipboardEmpty()) {
+    pickContents(x, y);
+  } else {
+    putContents(x, y);
+  }
+}
+
+function pickContents(x, y) {
   let squareContents = inventory.grid[y][x];
 
   if (squareContents.itemId === 0) {
@@ -113,11 +190,15 @@ function selectSquare() {
 
   let itemCoords = inventory.findItemCoords(x, y, squareContents.itemId);
   Sizzle("#currently-selected-item")[0].innerHTML = squareContents.name;
-  inventory.clipboard.itemObject = squareContents;
+
+  addToClipboard(squareContents, itemCoords);
+  clearSelectedItem(itemCoords);
+}
+
+function addToClipboard(item, itemCoords) {
+  inventory.clipboard.itemObject = item;
   inventory.clipboard.itemCoords = itemCoords;
   console.log('clipboard :', inventory.clipboard.itemCoords);
-
-  clearSelectedItem(itemCoords);
 }
 
 /**
@@ -130,7 +211,6 @@ function clearSelectedItem(itemCoords) {
     let y = itemCoords[i][1];
 
     inventory.grid[y][x] = ItemLibrary.emptyItem;
-
   }
 
   redrawSatchel();
@@ -141,8 +221,5 @@ function clearSelectedItem(itemCoords) {
  */
 function redrawSatchel() {
   renderGrid(inventory.grid, "satchel");
-  bindSatchelEvent(selectSquare, 'click');
-  bindSatchelEvent(castShadow, 'mouseover');
-  bindSatchelEvent(selection, 'mouseout');
-
+  bindEvents();
 }

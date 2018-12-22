@@ -1,6 +1,15 @@
+/**
+ * The satchel class. Implements a 2D array specifically for storing item
+ * objects. The satchel can then be used as an inventory system akin to
+ * old-school RPGs which had the grid containing items of different sizes.
+ * Properties:
+ * @prop {clipboard} A temp storage for selected items.
+ * @prop {maxX}      The max row width to easily get the bounds of the grid.
+ * @prop {maxY}      The max column height to easily get the bounds of the grid.
+ */
 class Satchel extends Grid {
   /**
-   *
+   * The constructor method.
    * @param {int} width  How many columns the subarray should be.
    * @param {int} height How many rows the 2D array should have.
    */
@@ -15,6 +24,9 @@ class Satchel extends Grid {
       itemObject: {},
       itemCoords: []
     };
+
+    this.maxX = width - 1;
+    this.maxY = height - 1;
   }
 
   /**
@@ -26,11 +38,20 @@ class Satchel extends Grid {
     return this.isEmpty(this.clipboard.itemObject);
   }
 
+  /**
+   * Adds a reference to an item to the clipboard.
+   * @param {object} object The object to store in the clipboard.
+   * @param {array} coords  An array of coordinates representing the position of
+   * the item in the inventory grid.
+   */
   addToClipboard(object, coords) {
     this.clipboard.itemObject = object;
     this.clipboard.itemCoords = coords;
   }
 
+    /**
+     * Removes the reference to an item stored in the clipboard.
+     */
   clearClipboard() {
     this.clipboard.itemObject = {};
     this.clipboard.itemCoords = []
@@ -92,7 +113,7 @@ class Satchel extends Grid {
     return itemCoords;
   }
 
-  getSelectedItemSize() {
+  getClipboardItemSize() {
     return this.clipboard.itemCoords.length;
   }
 

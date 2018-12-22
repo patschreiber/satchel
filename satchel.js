@@ -71,9 +71,6 @@ function renderGrid(matrix, element) {
   container.replaceWith(grid);
 }
 
-renderGrid(inventory.grid, "satchel");
-bindEvents();
-
 
 
 /**
@@ -95,7 +92,43 @@ function bindSatchelEvent(callback, type) {
   }
 }
 
-function test() {
+function bindEvents() {
+  bindSatchelEvent(selectSquare, 'click');
+  bindSatchelEvent(highlight, 'mouseenter');
+}
+
+function getItemGhost(itemSize, item, x, y) {
+  let ghostSquares = [];
+
+  // We only need to worry about orientation for items bigger than 1 square.
+  if (itemSize > 1) {
+    if (item.orientation === "vertical") {
+      height = itemSize / item.thickness;
+      width = item.thickness;
+
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          ghostSquares.push([x + j, y + i]);
+        }
+      }
+    }
+
+    if (item.orientation === "horizontal") {
+      height = item.thickness;
+      width = itemSize / item.thickness;
+
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          ghostSquares.push([x + j, y + i]);
+        }
+      }
+    }
+  }
+
+  return ghostSquares;
+}
+
+function highlight() {
   if (inventory.isClipboardEmpty()) {
     return;
   }
@@ -103,33 +136,8 @@ function test() {
   let x = parseInt(this.dataset.x);
   let y = parseInt(this.dataset.y);
   let item = inventory.clipboard.itemObject;
-  let itemSize = inventory.getSelectedItemSize();
-  let squaresToColor = [];
-
-  // We only need to worry about orientation for items bigger than 1 square.
-  if (itemSize > 1) {
-    if (item.orientation === "vertical") {
-      let height = itemSize / item.thickness;
-      let width = item.thickness;
-
-      for (let i=0; i<height; i++) {
-        for (let j=0; j<width; j++) {
-          squaresToColor.push([x+j,y+i]);
-        }
-      }
-    }
-
-    if (item.orientation === "horizontal") {
-      let height = item.thickness;
-      let width = itemSize / item.thickness;
-
-      for (let i = 0; i < height; i++) {
-        for (let j = 0; j < width; j++) {
-          squaresToColor.push([x + j, y + i]);
-        }
-      }
-    }
-  }
+  let itemSize = inventory.getClipboardItemSize();
+  let squaresToColor = getItemGhost(itemSize, item, x, y);
 
   colorSatchelSquares(squaresToColor);
 }
@@ -147,7 +155,7 @@ function colorSatchelSquares(colorCoords) {
     let x = colorCoords[i][0];
     let y = colorCoords[i][1];
 
-    let square = getSquare(x, y);
+    let square = getDOMSquare(x, y);
     if (square !== null) {
       let squareContents = inventory.grid[y][x];
       if (squareContents.itemId === 0) {
@@ -159,12 +167,12 @@ function colorSatchelSquares(colorCoords) {
   }
 }
 
-function bindEvents() {
-  bindSatchelEvent(selectSquare, 'click');
-  bindSatchelEvent(test, 'mouseenter');
-}
-
-function getSquare(x, y) {
+/**
+ * Gets the DOM element representing the square.
+ * @param {int} x     The x position on the 2D array.
+ * @param {int} y     The y position on the 2D array.
+ */
+function getDOMSquare(x, y) {
   return document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
 }
 
@@ -199,6 +207,18 @@ function pickContents(x, y) {
   clearSelectedItem(itemCoords);
 }
 
+function putContents(x, y) {
+  console.log("hi");
+  let item = inventory.clipboard.itemObject;
+  let itemSize = inventory.getClipboardItemSize();
+  let possiblePlacementSquares = getItemGhost(itemSize, item, x, y);
+  console.log('possiblePlacementSquares :', possiblePlacementSquares);
+  console.log('inventory.grid :', inventory.grid);
+  for (let i=0; i<possiblePlacementSquares.length; i++) {
+
+  }
+}
+
 
 
 /**
@@ -210,7 +230,7 @@ function clearSelectedItem(itemCoords) {
     let x = itemCoords[i][0];
     let y = itemCoords[i][1];
     inventory.grid[y][x] = ItemLibrary.emptyItem;
-    getSquare(x, y).innerHTML = "";
+    getDOMSquare(x, y).innerHTML = "";
   }
 }
 
@@ -221,3 +241,12 @@ function redrawSatchel() {
   renderGrid(inventory.grid, "satchel");
   bindEvents();
 }
+
+
+
+
+
+
+
+renderGrid(inventory.grid, "satchel");
+bindEvents();

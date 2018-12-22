@@ -18,6 +18,15 @@ class Satchel extends Grid {
   }
 
   /**
+   * Checks if the clipboard is empty by looking at the value of the itemObject
+   * key. If itemObject is empty, we assume the clipboard is empty.
+   * @return {boolean}    The status of the clipboard
+   */
+  isClipboardEmpty() {
+    return this.isEmpty(this.clipboard.itemObject);
+  }
+
+  /**
    *
    * @param {int} x       The x position on the 2D (grid) array.
    * @param {int} y	      The y position on the 2D (grid) array.
@@ -75,10 +84,6 @@ class Satchel extends Grid {
 
   getSelectedItemSize() {
     return this.clipboard.itemCoords.length;
-  }
-
-  canPlaceItem() {
-
   }
 
   /**

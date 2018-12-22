@@ -5,16 +5,16 @@
  * name	        The string representation of the item
  * abbr         The two letter code for the base item.
  * orientation	The orientation on the grid [null, vertical, horizontal]
- * Shapes	      The shape of the item on the grid. See [shapes] below.
+ * shape	      The shape of the item on the grid. See [shapes] below.
+ * thickness    How many columns the item is.
  */
 
 /**
  * Shapes:
  * rect_v	    Vertical Rectangle
  * rect_h	    Horizontal Rectangle
- * square	    Square
+ * square	    Square. All sides have equal length
  * cross	    Cross shape "+"
- * single	    Only a single grid square
  */
 
 var ItemLibrary = {
@@ -25,7 +25,8 @@ var ItemLibrary = {
     name: null,
     abbr: "xx",
     orientation: null,
-    shape: null
+    shape: null,
+    thickness: null
   },
   // Plate Armor
   testArmor: {
@@ -34,15 +35,17 @@ var ItemLibrary = {
     name: "Plate Armor",
     abbr: "pa",
     orientation: "vertical",
-    shape: "rect_v"
+    shape: "rect_v",
+    thickness: 2
   },
   testBook: {
-    itemId: 1001,
-    sym: "▲",   // item abbreviation
-    name: "Plate Armor",
+    itemId: 1004,
+    sym: "◼︎",   // item abbreviation
+    name: "Book",
     abbr: "tb",
-    orientation: null,
-    shape: "rect_v"
+    orientation: "horizontal",
+    shape: "rect_v",
+    thickness: 2
   },
   // Ring
   testRing: {
@@ -51,6 +54,17 @@ var ItemLibrary = {
     name: "Magic Ring",
     abbr: "tr",
     orientation: "vertical",
-    shape: "single"
+    shape: "square",
+    thickness: 1
+  },
+  // Skinny single column sword
+  skinnySword: {
+    itemId: 1003,
+    sym: "|",
+    name: "Skinny Sword",
+    abbr: "ss",
+    orientation: "vertical",
+    shape: "line",
+    thickness: 1
   }
 }

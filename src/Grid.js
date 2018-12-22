@@ -19,6 +19,19 @@ class Grid {
   }
 
   /**
+   * Checks to see if an object is empty.
+   * @param {object} obj     The object to iterate through.
+   * @return {boolean}       The status of the object.
+   */
+  isEmpty(obj) {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key))
+        return false;
+    }
+    return true;
+  }
+
+  /**
    * Converts a coordinate pair array into a string. E.g [1,2] -> "1,2"
    * @param {array} coords  The coordinate pair to stringify.
    * @return {string}       The coordinates in string form. E.g "1,2"

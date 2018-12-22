@@ -21,7 +21,7 @@ var ItemLibrary = {
   // Empty item
   emptyItem: {
     itemId: 0,
-    sym: " ",
+    sym: "",
     name: null,
     abbr: "xx",
     orientation: null,

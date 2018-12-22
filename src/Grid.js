@@ -23,9 +23,9 @@ class Grid {
    * @param {object} obj     The object to iterate through.
    * @return {boolean}       The status of the object.
    */
-  isEmpty(obj) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key))
+  isEmpty(object) {
+    for (let key in object) {
+      if (object.hasOwnProperty(key))
         return false;
     }
     return true;

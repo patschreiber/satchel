@@ -47,7 +47,7 @@ function constructGrid(matrix) {
       gridSquare.setAttribute('class', 'grid-square');
       gridSquare.setAttribute('data-x', j);
       gridSquare.setAttribute('data-y', i);
-      gridSquare.innerHTML = `${gridSquareVal.sym} `;
+      gridSquare.innerHTML = `${gridSquareVal.sym}`;
 
       rowDiv.appendChild(gridSquare);
     }
@@ -147,7 +147,7 @@ function colorSatchelSquares(colorCoords) {
     let x = colorCoords[i][0];
     let y = colorCoords[i][1];
 
-    let square = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
+    let square = getSquare(x, y);
     if (square !== null) {
       let squareContents = inventory.grid[y][x];
       if (squareContents.itemId === 0) {
@@ -162,6 +162,10 @@ function colorSatchelSquares(colorCoords) {
 function bindEvents() {
   bindSatchelEvent(selectSquare, 'click');
   bindSatchelEvent(test, 'mouseenter');
+}
+
+function getSquare(x, y) {
+  return document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
 }
 
 
@@ -191,15 +195,11 @@ function pickContents(x, y) {
   let itemCoords = inventory.findItemCoords(x, y, squareContents.itemId);
   Sizzle("#currently-selected-item")[0].innerHTML = squareContents.name;
 
-  addToClipboard(squareContents, itemCoords);
+  inventory.addToClipboard(squareContents, itemCoords);
   clearSelectedItem(itemCoords);
 }
 
-function addToClipboard(item, itemCoords) {
-  inventory.clipboard.itemObject = item;
-  inventory.clipboard.itemCoords = itemCoords;
-  console.log('clipboard :', inventory.clipboard.itemCoords);
-}
+
 
 /**
  * Removes the item from the grid using the item's grid coordinates.
@@ -209,11 +209,9 @@ function clearSelectedItem(itemCoords) {
   for (let i=0; i<itemCoords.length; i++) {
     let x = itemCoords[i][0];
     let y = itemCoords[i][1];
-
     inventory.grid[y][x] = ItemLibrary.emptyItem;
+    getSquare(x, y).innerHTML = "";
   }
-
-  redrawSatchel();
 }
 
 /**

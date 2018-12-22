@@ -26,6 +26,16 @@ class Satchel extends Grid {
     return this.isEmpty(this.clipboard.itemObject);
   }
 
+  addToClipboard(object, coords) {
+    this.clipboard.itemObject = object;
+    this.clipboard.itemCoords = coords;
+  }
+
+  clearClipboard() {
+    this.clipboard.itemObject = {};
+    this.clipboard.itemCoords = []
+  }
+
   /**
    *
    * @param {int} x       The x position on the 2D (grid) array.

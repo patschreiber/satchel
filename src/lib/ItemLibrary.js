@@ -7,6 +7,7 @@
  * orientation	The orientation on the grid [null, vertical, horizontal]
  * shape	      The shape of the item on the grid. See [shapes] below.
  * thickness    How many columns the item is.
+ * size         How many squares the item occupies.
  */
 
 /**
@@ -26,7 +27,8 @@ var ItemLibrary = {
     abbr: "xx",
     orientation: null,
     shape: null,
-    thickness: null
+    thickness: null,
+    size: null
   },
   // Plate Armor
   testArmor: {
@@ -36,7 +38,8 @@ var ItemLibrary = {
     abbr: "pa",
     orientation: "vertical",
     shape: "rect_v",
-    thickness: 2
+    thickness: 2,
+    size: 6
   },
   testBook: {
     itemId: 1004,
@@ -45,7 +48,8 @@ var ItemLibrary = {
     abbr: "tb",
     orientation: "horizontal",
     shape: "rect_v",
-    thickness: 2
+    thickness: 2,
+    size: 4
   },
   // Ring
   testRing: {
@@ -55,7 +59,8 @@ var ItemLibrary = {
     abbr: "tr",
     orientation: "vertical",
     shape: "square",
-    thickness: 1
+    thickness: 1,
+    size: 1
   },
   // Skinny single column sword
   skinnySword: {
@@ -65,6 +70,7 @@ var ItemLibrary = {
     abbr: "ss",
     orientation: "vertical",
     shape: "line",
-    thickness: 1
+    thickness: 1,
+    size: 4
   }
 }

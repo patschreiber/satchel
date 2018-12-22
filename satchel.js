@@ -97,37 +97,44 @@ function bindEvents() {
   bindSatchelEvent(highlight, 'mouseenter');
 }
 
-function getItemGhost(itemSize, item, x, y) {
+/**
+ * Gets the potential placement squares for an item. Think of it as an "outline"
+ * of the item so we can operate on where the item may be placed.
+ * @param {object} item
+ * @param {int} x     The x position on the 2D array.
+ * @param {int} y     The y position on the 2D array.
+ */
+function getItemGhost(item, x, y) {
   let ghostSquares = [];
+  let itemHeight = 0;
+  let itemWidth = 0;
 
   // We only need to worry about orientation for items bigger than 1 square.
-  if (itemSize > 1) {
-    if (item.orientation === "vertical") {
-      height = itemSize / item.thickness;
-      width = item.thickness;
+  switch(item.orientation) {
+    case "vertical":
+      itemHeight = item.size / item.thickness;
+      itemWidth = item.thickness;
+      break;
+    case "horizontal":
+      itemHeight = item.thickness;
+      itemWidth = item.size / item.thickness;
+      break;
+    default:
+      return;
+  }
 
-      for (let i = 0; i < height; i++) {
-        for (let j = 0; j < width; j++) {
-          ghostSquares.push([x + j, y + i]);
-        }
-      }
-    }
-
-    if (item.orientation === "horizontal") {
-      height = item.thickness;
-      width = itemSize / item.thickness;
-
-      for (let i = 0; i < height; i++) {
-        for (let j = 0; j < width; j++) {
-          ghostSquares.push([x + j, y + i]);
-        }
-      }
+  for (let i = 0; i < itemHeight; i++) {
+    for (let j = 0; j < itemWidth; j++) {
+      ghostSquares.push([x + j, y + i]);
     }
   }
 
   return ghostSquares;
 }
 
+/**
+ * Highlights squares for the item currently in the clipboard.
+ */
 function highlight() {
   if (inventory.isClipboardEmpty()) {
     return;
@@ -136,12 +143,14 @@ function highlight() {
   let x = parseInt(this.dataset.x);
   let y = parseInt(this.dataset.y);
   let item = inventory.clipboard.itemObject;
-  let itemSize = inventory.getClipboardItemSize();
-  let squaresToColor = getItemGhost(itemSize, item, x, y);
+  let squaresToColor = getItemGhost(item, x, y);
 
   colorSatchelSquares(squaresToColor);
 }
 
+/**
+ * Removes highlighted squares.
+ */
 function clearGridColor() {
   let gridSquares = document.getElementsByClassName("grid-square");
   for (let i=0; i<gridSquares.length; i++) {
@@ -207,21 +216,40 @@ function pickContents(x, y) {
   clearSelectedItem(itemCoords);
 }
 
-function putContents(x, y) {
-  let item = inventory.clipboard.itemObject;
-  let itemSize = inventory.getClipboardItemSize();
-  let possiblePlacementCoords = getItemGhost(itemSize, item, x, y);
+/**
+ *
+ * @param {array} coords  The array of coords . e.g. [[0,1], [1,1], [2,5]]
+ */
+function pickContentsInArea(coords) {
+  let x = 0;
+  let y = 0;
+  for (let i=0; i<coords.length; i++) {
+    let x = coords[i][0];
+    let y = coords[i][1];
+    let squareContents = inventory.grid[y][x];
+
+    if (squareContents.itemId !== 0) {
+      pickContents(x, y);
+      break;
+    }
+  }
+}
+
+/**
+ * Checks inventory squares to see if they're currently-occupied.
+ * @param {array} coords   The array of item coords.
+ */
+function getOccupants(coords) {
   let currentOccupantId = 0;
   let occupants = {};
 
-  for (let i=0; i<possiblePlacementCoords.length; i++) {
-    let x = possiblePlacementCoords[i][0];
-    let y = possiblePlacementCoords[i][1];
+  for (let i=0; i<coords.length; i++) {
+    let x = coords[i][0];
+    let y = coords[i][1];
 
     // We can't place an item that's going to be out of bounds.
     if (x > inventory.maxX || y > inventory.maxY) {
-      console.error("out of bounds");
-      return;
+      return false;
     }
 
     currentOccupantId = inventory.grid[y][x].itemId;
@@ -231,40 +259,55 @@ function putContents(x, y) {
     }
   }
 
+  return occupants;
+}
+
+/**
+ * Attempts to place the item from the clipboard into the inventory grid.
+ * @param {int} x     The x position on the 2D array.
+ * @param {int} y     The y position on the 2D array.
+ */
+function putContents(x, y) {
+  let item = inventory.clipboard.itemObject;
+  let possiblePlacementCoords = getItemGhost(item, x, y);
+  let occupants = getOccupants(possiblePlacementCoords);
+
+  // If we checked a square that's out of bounds, we won't even attempt to place
+  // the item.
+  if (occupants === false) {
+    return;
+  }
+
   // We need a count of how many different items currently exist in the desired
   // placement and we only want to manipulate the grid if the item can be
   // placed. If there's not 0-1 occupants in the desired grid, let's leave it
   // alone.
   switch (Object.keys(occupants).length) {
     case 0:
-      placeItem(possiblePlacementCoords);
+      placeItem(possiblePlacementCoords, item);
+      inventory.clearClipboard();
       break;
     case 1:
       let itemId = Object.keys(occupants)[0];
-      placeItem(possiblePlacementCoords, occupants[itemId]);
+      // occupants[itemId]
+      let itemToPlace = inventory.clipboard.itemObject;
+      inventory.clearClipboard();
+      pickContentsInArea(possiblePlacementCoords); // TODO we cant do this since we have to know if items exist in all squares of the item
+      placeItem(possiblePlacementCoords, itemToPlace);
       break;
     default:
       return;
   }
-
 }
 
-function placeItem(coords, swapItem = false) {
-  let itemToPlace = inventory.clipboard.itemObject;
-
-  if (swapItem) {
-    inventory.clipboard.itemObject = swapItem;
-  }
-
+function placeItem(coords, item) {
   for (let i = 0; i<coords.length; i++) {
     let x = coords[i][0];
     let y = coords[i][1];
-    inventory.grid[y][x] = itemToPlace;
-    getDOMSquare(x, y).innerHTML = itemToPlace.sym;
+    inventory.grid[y][x] = item;
+    getDOMSquare(x, y).innerHTML = item.sym;
     Sizzle("#currently-selected-item")[0].innerHTML = "";
   }
-
-  inventory.clearClipboard();
 }
 
 

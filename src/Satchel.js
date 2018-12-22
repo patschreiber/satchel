@@ -44,7 +44,7 @@ class Satchel extends Grid {
    * @param {array} coords  An array of coordinates representing the position of
    * the item in the inventory grid.
    */
-  addToClipboard(object, coords) {
+  addToClipboard(object, coords = []) {
     this.clipboard.itemObject = object;
     this.clipboard.itemCoords = coords;
   }
@@ -111,10 +111,6 @@ class Satchel extends Grid {
     }
 
     return itemCoords;
-  }
-
-  getClipboardItemSize() {
-    return this.clipboard.itemCoords.length;
   }
 
   /**

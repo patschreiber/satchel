@@ -1,3 +1,7 @@
+/**
+ * The Grid superclass. Constructs a generic 2D array. Can find all common
+ * neighbors to a specific x,y coordinate.
+ */
 class Grid {
   /**
    *
@@ -58,11 +62,6 @@ class Grid {
       leftBorder: grid[y][x-1] === undefined ? true : false,
       rightBorder: grid[y][x+1] === undefined ? true : false
     }
-
-    // console.log("atTop:" + top)
-    // console.log("atBottom:" + bottom)
-    // console.log("atLeftBorder:" + leftBorder)
-    // console.log("atRightBorder:" + rightBorder)
 
     return touchingBoundaries;
   }

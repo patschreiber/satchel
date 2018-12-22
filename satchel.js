@@ -27,7 +27,6 @@ inventory.grid[1][4] = ItemLibrary.testBook;
 inventory.grid[0][5] = ItemLibrary.testBook;
 inventory.grid[1][5] = ItemLibrary.testBook;
 
-
 /**
  * Creates the grid DOM structure
  * @param {array} matrix    The 2D array representing our grid.
@@ -71,32 +70,6 @@ function renderGrid(matrix, element) {
   container.replaceWith(grid);
 }
 
-
-
-/**
- *            Click Events
- */
-
-
-/**
- * Binds an event to all grid squares
- * @param {object} callback    The callback function.
- * @param {string} type	       The type of event e.g. 'click'
- */
-function bindSatchelEvent(callback, type) {
-  // Bind a click event to all grid squares
-  // var gridSquares = document.getElementsByClassName("grid-square");
-  var gridSquares = Sizzle(".grid-square");
-  for (let i=0; i<gridSquares.length; i++) {
-      gridSquares[i].addEventListener(type,callback);
-  }
-}
-
-function bindEvents() {
-  bindSatchelEvent(selectSquare, 'click');
-  bindSatchelEvent(highlight, 'mouseenter');
-}
-
 /**
  * Gets the potential placement squares for an item. Think of it as an "outline"
  * of the item so we can operate on where the item may be placed.
@@ -109,7 +82,6 @@ function getItemGhost(item, x, y) {
   let itemHeight = 0;
   let itemWidth = 0;
 
-  // We only need to worry about orientation for items bigger than 1 square.
   switch(item.orientation) {
     case "vertical":
       itemHeight = item.size / item.thickness;
@@ -158,6 +130,11 @@ function clearGridColor() {
   }
 }
 
+/**
+ * Applies a color to grid squares. Will visually alert the user if an item
+ * in the clipboard is overlapping an item at rest in the grid.
+ * @param {array} colorCoords The array of coords to color.
+ */
 function colorSatchelSquares(colorCoords) {
   clearGridColor();
   for (let i=0; i<colorCoords.length; i++) {
@@ -185,7 +162,6 @@ function getDOMSquare(x, y) {
   return document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
 }
 
-
 /**
  * Callback function
  * Modifies the grid state based on the value at the selected square.
@@ -202,6 +178,11 @@ function selectSquare() {
   }
 }
 
+/**
+ * Picks up a square's contents.
+ * @param {int} x     The x position on the 2D array.
+ * @param {int} y     The y position on the 2D array.
+ */
 function pickContents(x, y) {
   let squareContents = inventory.grid[y][x];
 
@@ -217,12 +198,10 @@ function pickContents(x, y) {
 }
 
 /**
- *
+ * Finds a selected item in an area and picks the item.
  * @param {array} coords  The array of coords . e.g. [[0,1], [1,1], [2,5]]
  */
 function pickContentsInArea(coords) {
-  let x = 0;
-  let y = 0;
   for (let i=0; i<coords.length; i++) {
     let x = coords[i][0];
     let y = coords[i][1];
@@ -288,8 +267,6 @@ function putContents(x, y) {
       inventory.clearClipboard();
       break;
     case 1:
-      let itemId = Object.keys(occupants)[0];
-      // occupants[itemId]
       let itemToPlace = inventory.clipboard.itemObject;
       inventory.clearClipboard();
       pickContentsInArea(possiblePlacementCoords); // TODO we cant do this since we have to know if items exist in all squares of the item
@@ -300,7 +277,13 @@ function putContents(x, y) {
   }
 }
 
+/**
+ * Places an item in the inventory grid and updates the UI.
+ * @param {*} coords The array of
+ * @param {*} item   The item object to place
+ */
 function placeItem(coords, item) {
+  clearGridColor();
   for (let i = 0; i<coords.length; i++) {
     let x = coords[i][0];
     let y = coords[i][1];
@@ -309,7 +292,6 @@ function placeItem(coords, item) {
     Sizzle("#currently-selected-item")[0].innerHTML = "";
   }
 }
-
 
 /**
  * Removes the item from the grid using the item's grid coordinates.
@@ -324,19 +306,54 @@ function clearSelectedItem(itemCoords) {
   }
 }
 
+
 /**
- * Re-renders the satchel object to the DOM.
+ *            Events
  */
-function redrawSatchel() {
-  renderGrid(inventory.grid, "satchel");
-  bindEvents();
+
+
+/**
+ * Binds an event to all grid squares
+ * @param {object} callback    The callback function.
+ * @param {string} type	       The type of event e.g. 'click'
+ */
+function bindSatchelEvent(callback, type) {
+  // Bind a click event to all grid squares
+  // var gridSquares = document.getElementsByClassName("grid-square");
+  var gridSquares = Sizzle(".grid-square");
+  for (let i = 0; i < gridSquares.length; i++) {
+    gridSquares[i].addEventListener(type, callback);
+  }
 }
 
+/**
+ * Wraps all of the satchel events in a handy call.
+ */
+function bindEvents() {
+  bindSatchelEvent(selectSquare, 'click');
+  bindSatchelEvent(highlight, 'mouseenter');
+}
 
+/**
+ * We bind escape to snap an item in the clipboard back to it's original pos.
+ */
+document.onkeydown = function(e) {
+  if (inventory.isClipboardEmpty()) {
+    return;
+  }
 
+  let itemCoords = inventory.clipboard.itemCoords;
+  let item = inventory.clipboard.itemObject;
 
+  e = e || window.event;
+  if (e.key === "Escape") {
+    placeItem(itemCoords, item);
+    inventory.clearClipboard();
+  }
+}
 
-
-
+/**
+ * Initial render and binding
+ */
 renderGrid(inventory.grid, "satchel");
 bindEvents();

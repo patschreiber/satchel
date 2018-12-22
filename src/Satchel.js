@@ -1,11 +1,16 @@
 /**
  * The satchel class. Implements a 2D array specifically for storing item
  * objects. The satchel can then be used as an inventory system akin to
- * old-school RPGs which had the grid containing items of different sizes.
+ * old-school RPGs which had a grid containing items of different sizes. The
+ * satchel allows a user to rearrange items in the grid manually.
+ *
+ * An item in the clipboard can be swapped with a single item in the grid.
+ * If the item in the clipboard overlaps more than 1 item, it can't be
+ * hotswapped.
  * Properties:
- * @prop {clipboard} A temp storage for selected items.
- * @prop {maxX}      The max row width to easily get the bounds of the grid.
- * @prop {maxY}      The max column height to easily get the bounds of the grid.
+ * @prop {object} clipboard A temp storage for selected items.
+ * @prop {int}   maxX   The max row width to easily get the bounds of the grid.
+ * @prop {int}   maxY   max column height to easily get the bounds of the grid.
  */
 class Satchel extends Grid {
   /**
@@ -49,9 +54,9 @@ class Satchel extends Grid {
     this.clipboard.itemCoords = coords;
   }
 
-    /**
-     * Removes the reference to an item stored in the clipboard.
-     */
+  /**
+   * Removes the reference to an item stored in the clipboard.
+   */
   clearClipboard() {
     this.clipboard.itemObject = {};
     this.clipboard.itemCoords = []

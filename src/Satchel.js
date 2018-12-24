@@ -17,9 +17,10 @@ class Satchel extends Grid {
    * The constructor method.
    * @param {int} width  How many columns the subarray should be.
    * @param {int} height How many rows the 2D array should have.
+   * @param {object} initialGridBlankVal The blank value to store.
    */
-  constructor(width, height) {
-    let initialGridBlankVal = ItemLibrary.emptyItem;
+  constructor(width, height, initialGridBlankVal = false) {
+    initialGridBlankVal = initialGridBlankVal || ItemLibrary.emptyItem;
     super(width, height, initialGridBlankVal);
 
     // We want to store a reference to the item as well as it's coordinates in

@@ -1,6 +1,3 @@
-
-let temp = null;
-
 let inventory = new Satchel(10, 4);
 
 inventory.grid[1][0] = ItemLibrary.testArmor;
@@ -35,12 +32,12 @@ function constructGrid(matrix) {
   let grid = document.createElement("div");
 
   // Grid rows
-  for (let i=0; i<matrix.length; i++) {
+  for (let i = 0; i < matrix.length; i++) {
     let rowDiv = document.createElement("div");
     rowDiv.setAttribute('class', 'grid-row');
 
     // Grid squares
-    for (let j=0; j<matrix[i].length; j++) {
+    for (let j = 0; j < matrix[i].length; j++) {
       let gridSquareVal = matrix[i][j];
       let gridSquare = document.createElement("div");
       gridSquare.setAttribute('class', 'grid-square');
@@ -82,7 +79,7 @@ function getItemGhost(item, x, y) {
   let itemHeight = 0;
   let itemWidth = 0;
 
-  switch(item.orientation) {
+  switch (item.orientation) {
     case "vertical":
       itemHeight = item.size / item.thickness;
       itemWidth = item.thickness;
@@ -125,7 +122,7 @@ function highlight() {
  */
 function clearGridColor() {
   let gridSquares = document.getElementsByClassName("grid-square");
-  for (let i=0; i<gridSquares.length; i++) {
+  for (let i = 0; i < gridSquares.length; i++) {
     gridSquares[i].removeAttribute("style");
   }
 }
@@ -137,7 +134,7 @@ function clearGridColor() {
  */
 function colorSatchelSquares(colorCoords) {
   clearGridColor();
-  for (let i=0; i<colorCoords.length; i++) {
+  for (let i = 0; i < colorCoords.length; i++) {
     let x = colorCoords[i][0];
     let y = colorCoords[i][1];
 
@@ -203,7 +200,7 @@ function pickContents(x, y) {
  * @param {array} coords  The array of coords . e.g. [[0,1], [1,1], [2,5]]
  */
 function pickContentsInArea(coords) {
-  for (let i=0; i<coords.length; i++) {
+  for (let i = 0; i < coords.length; i++) {
     let x = coords[i][0];
     let y = coords[i][1];
     let squareContents = inventory.grid[y][x];
@@ -223,7 +220,7 @@ function getOccupants(coords) {
   let currentOccupantId = 0;
   let occupants = {};
 
-  for (let i=0; i<coords.length; i++) {
+  for (let i = 0; i < coords.length; i++) {
     let x = coords[i][0];
     let y = coords[i][1];
 
@@ -285,7 +282,7 @@ function putContents(x, y) {
  */
 function placeItem(coords, item) {
   clearGridColor();
-  for (let i = 0; i<coords.length; i++) {
+  for (let i = 0; i < coords.length; i++) {
     let x = coords[i][0];
     let y = coords[i][1];
     inventory.grid[y][x] = item;
@@ -299,7 +296,7 @@ function placeItem(coords, item) {
  * @param {array} itemCoords  An array of item coordinates.
  */
 function clearSelectedItem(itemCoords) {
-  for (let i=0; i<itemCoords.length; i++) {
+  for (let i = 0; i < itemCoords.length; i++) {
     let x = itemCoords[i][0];
     let y = itemCoords[i][1];
     inventory.grid[y][x] = ItemLibrary.emptyItem;
@@ -338,7 +335,7 @@ function bindEvents() {
 /**
  * We bind escape to snap an item in the clipboard back to it's original pos.
  */
-document.onkeydown = function(e) {
+document.onkeydown = function (e) {
   if (inventory.isClipboardEmpty()) {
     return;
   }

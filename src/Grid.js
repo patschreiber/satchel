@@ -69,10 +69,9 @@ class Grid {
   /**
    * Finds all neighboring squares to square located at the provided coords.
    * @param  {array} squareCoords The coordinates to a satchel square.
-   * @param  {array} grid         The 2D grid to search.
    * @return {array}              The array of neighbor coordinates.
    */
-  getNeighbors(squareCoords, grid) {
+  getNeighbors(squareCoords) {
     let x = squareCoords[0];
     let y = squareCoords[1];
 

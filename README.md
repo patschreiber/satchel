@@ -146,7 +146,7 @@ Finds all neighboring squares relative to the square located at the provided coo
 
 grid.getNeighbords[0,1]
 
-//--> = {
+//--> {
 //      "topLeft": false,
 //      "top": false,
 //      "topRight": false,

@@ -191,8 +191,9 @@ function pickContents(x, y) {
   }
 
   let itemCoords = inventory.findItemCoords(x, y, squareContents.itemId);
-  Sizzle("#currently-selected-item")[0].innerHTML = squareContents.name;
+  let selectedItem = document.getElementById("currently-selected-item")
 
+  selectedItem.innerHTML = squareContents.name;
   inventory.addToClipboard(squareContents, itemCoords);
   clearSelectedItem(itemCoords);
 }
@@ -289,7 +290,7 @@ function placeItem(coords, item) {
     let y = coords[i][1];
     inventory.grid[y][x] = item;
     getDOMSquare(x, y).innerHTML = item.sym;
-    Sizzle("#currently-selected-item")[0].innerHTML = "";
+    document.getElementById("currently-selected-item").innerHTML = "";
   }
 }
 
@@ -319,8 +320,8 @@ function clearSelectedItem(itemCoords) {
  */
 function bindSatchelEvent(callback, type) {
   // Bind a click event to all grid squares
-  // var gridSquares = document.getElementsByClassName("grid-square");
-  var gridSquares = Sizzle(".grid-square");
+  var gridSquares = document.getElementsByClassName("grid-square");
+
   for (let i = 0; i < gridSquares.length; i++) {
     gridSquares[i].addEventListener(type, callback);
   }

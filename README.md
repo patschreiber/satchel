@@ -48,6 +48,8 @@ new Grid(10, 4, {objectId: 1, foo: "bar"});
 new Grid(100, 100, null);
 ```
 
+---
+
 ##### isEmpty(object)
 ##### stringifyCoords
 ##### getNeighbors

@@ -67,6 +67,8 @@ let myObj = {myProp: true};
 
 ```
 
+---
+
 ###### stringifyCoords(*array* coords)
 
 *Converts a coordinate pair array into a string. E.g `[1,2]` -> `"1,2"`. This method assumes the `coords` array will be two elements in length.
@@ -85,6 +87,8 @@ let myObj = {myProp: true};
 grid.stringifyCoords([1,2]);
 //--> "1,2"
 ```
+
+---
 
 ###### boundariesTouching(*array* squareCoords, *array* grid)
 
@@ -117,6 +121,8 @@ grid.boundariesTouching([2,2]);
 
 ```
 
+---
+
 ###### getNeighbors(*array* squareCoords)
 
  Finds all neighboring squares relative to the square located at the provided coords and returns the collection of the neighbor's coordinates.
@@ -145,7 +151,7 @@ grid.getNeighbords[0,1]
 //      "topLeft": false,
 //      "top": false,
 //      "topRight": false,
-//     "left": [0,0],
+//      "left": [0,0],
 //      "right": [0,2],
 //      "bottomLeft": [1,0],
 //      "bottom": [1,1],
@@ -158,7 +164,7 @@ grid.getNeighbords[1,1]
 //      "topLeft": [0,0],
 //      "top": [0,1],
 //      "topRight": [0,2],
-//     "left": [1,0],
+//      "left": [1,0],
 //      "right": [1,2],
 //      "bottomLeft": [2,0],
 //      "bottom": [2,1],

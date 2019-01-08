@@ -23,21 +23,21 @@ The Satchel will be filled with a
 
 #### Grid
 
-> Constructs a generic 2D array and fills the array with a default value. If no default value is provided, the grid square's default  to `0`.
+*Constructs a generic 2D array and fills the array with a default value. If no default value is provided, the grid square's default  to `0`.*
 
 ```js
 new Grid(width, height, initialGridBlankVal)
 ```
 
-###### constructor(int width, int height, mixed)
+##### constructor(int width, int height, mixed)
 
 Arguments
 
-- `width`
+`width`
 > How many squares wide the grid will be.
-- `height`
+`height`
 > How many squares tall the grid will be.
-- `initialGridBlankVal`
+`initialGridBlankVal`
 > The initial value that will be filled into the grid squares. It can be any type.
 
 Examples
@@ -48,9 +48,9 @@ new Grid(10, 4, {objectId: 1, foo: "bar"});
 new Grid(100, 100, null);
 ```
 
-###### isEmpty(object)
-###### stringifyCoords
-###### getNeighbors
+##### isEmpty(object)
+##### stringifyCoords
+##### getNeighbors
 
 #### Satchel
 

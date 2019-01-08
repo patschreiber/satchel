@@ -125,7 +125,7 @@ grid.boundariesTouching([2,2]);
 
 ###### getNeighbors(*array* squareCoords)
 
- Finds all neighboring squares relative to the square located at the provided coords and returns the collection of the neighbor's coordinates.
+Finds all neighboring squares relative to the square located at the provided coords and returns the collection of the neighbor's coordinates.
 
  ###### Arguments
 
@@ -142,7 +142,6 @@ grid.boundariesTouching([2,2]);
    [[0,0,0],
     [0,0,0],
     [0,0,0]]
-
 */
 
 grid.getNeighbords[0,1]

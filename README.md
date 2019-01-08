@@ -159,7 +159,7 @@ grid.getNeighbords[0,1]
 
 grid.getNeighbords[1,1]
 
-//--> = {
+//--> {
 //      "topLeft": [0,0],
 //      "top": [0,1],
 //      "topRight": [0,2],

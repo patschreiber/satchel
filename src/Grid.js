@@ -24,7 +24,7 @@ class Grid {
 
   /**
    * Checks to see if an object is empty.
-   * @param {object} obj     The object to iterate through.
+   * @param {object} object     The object to iterate through.
    * @return {boolean}       The status of the object.
    */
   isEmpty(object) {
@@ -53,14 +53,14 @@ class Grid {
    * @param {array} grid          The 2D grid to search.
    * @return {object}             The boundaries the squareCoords are touching.
    */
-  boundariesTouching(squareCoords, grid) {
+  boundariesTouching(squareCoords) {
     let x = squareCoords[0];
     let y = squareCoords[1];
     let touchingBoundaries = {
-      top: grid[y-1] === undefined ? true : false,
-      bottom: grid[y+1] === undefined ? true : false,
-      leftBorder: grid[y][x-1] === undefined ? true : false,
-      rightBorder: grid[y][x+1] === undefined ? true : false
+      top: this.grid[y-1] === undefined ? true : false,
+      bottom: this.grid[y+1] === undefined ? true : false,
+      leftBorder: this.grid[y][x-1] === undefined ? true : false,
+      rightBorder: this.grid[y][x+1] === undefined ? true : false
     }
 
     return touchingBoundaries;
@@ -87,7 +87,7 @@ class Grid {
       "bottomRight": false
     };
 
-    let atBoundary = this.boundariesTouching(squareCoords, grid);
+    let atBoundary = this.boundariesTouching(squareCoords);
 
     if (atBoundary.top === false) {
       if (atBoundary.leftBorder === false) {

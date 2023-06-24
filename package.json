@@ -1,0 +1,15 @@
+{
+  "name": "satchel",
+  "version": "1.0.0",
+  "description": "Satchel allows you to easily create a grid-based inventory system à la Diablo. Etude in Diablo-esque inventory systems.",
+  "main": "index.js",
+  "repository": "git@github.com:patschreiber/satchel.git",
+  "author": "Patrick Schreiber <2431707+patschreiber@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  },
+  "scripts": {
+    "upgrade-all-dependencies": "yarn upgrade-interactive --latest"
+  }
+}

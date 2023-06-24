@@ -3,4 +3,4 @@
 desktop.ini
 *.bak
 node_modules
-
+src/deprecated

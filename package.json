@@ -14,7 +14,7 @@
   "scripts": {
     "upgrade-all-dependencies": "yarn upgrade-interactive --latest",
     "build": "tsc --build",
-    "build-dry-run": "tsc --dry",
+    "build-dry-run": "tsc --build --dry",
     "watch": "tsc --watch"
   }
 }

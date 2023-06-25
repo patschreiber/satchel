@@ -4,3 +4,5 @@ desktop.ini
 *.bak
 node_modules
 src/deprecated
+dist/*
+!dist/.gitkeep

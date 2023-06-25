@@ -6,6 +6,8 @@ import S = Satchel;
 
 /// <reference types="../../lib/item.d.ts" />
 /// <reference types="../../lib/grid.d.ts" />
-/// <reference types="../../lib/node.d.ts" />
+/// <reference types="../../lib/container.d.ts" />
 /// <reference types="../../lib/satchel.d.ts" />
+
+// const testSatchel = new S.Container.Bag([100,100]);
 

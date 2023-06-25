@@ -5,8 +5,4 @@ declare namespace Satchel {
 
   // Wrap the dep so it's swappable l8r.
   type uuid = uuidv4;
-
-  type Container = {
-    id: uuid
-  }
 }
